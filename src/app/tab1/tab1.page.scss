@@ -2,14 +2,50 @@
     margin-left: 8px;
 }
 
-.rentMeBtn {
-    margin-left: 327px;
-}
-
 h4 {
     margin-left: 8px;
 }
 
+.card-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detailsBtn,
+.rentMeBtn {
+    flex: 1;
+    margin: 5 5px;
+}
+
+ion-searchbar.custom {
+    --background: #007d6e;
+    --color: #fff;
+    --placeholder-color: #fff;
+    --icon-color: #fff;
+    --clear-button-color: #fff;
+}
+
+ion-button.custom {
+    --background: #007d6e;
+    --color: #fff;
+    --placeholder-color: #fff;
+    --icon-color: #fff;
+}
+
+ion-button {
+    --background: #007d6e;
+    --color: #fff;
+}
+
 .favBtn {
-    margin-left: 395px; 
+    width: 250px;
+    margin-top: 15px;
+}
+
+.carlogo {
+    width: 80px;
+    height: auto;
+    margin-top: 15px;
+    padding: 0%;
 }

@@ -1,49 +1,134 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Search <!--Put app logo here-->
+        <img src="/assets/car.png" alt="Car Logo" class="carlogo">
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-searchbar animated="true" placeholder="Browse Vehicles"></ion-searchbar> <!--Animation not working-->
-  <ion-button class="filterBtn" fill="outline">Filter</ion-button>
+  <ion-searchbar #searchbar [(ngModel)]="searchTerm" placeholder="Browse Vehicles" animated class="custom" (ionInput)="onSearchChange($event)"></ion-searchbar>
+  
+  <ion-button class="filterBtn" (click)="toggleFilter()" shape="round" class="custom">Filter</ion-button>
+  <div *ngIf="showFilter">
+    <!-- Type Dropdown -->
+    <ion-item>
+      <ion-label>Type</ion-label>
+      <ion-select [(ngModel)]="selectedType">
+        <ion-select-option value="Truck">Truck</ion-select-option>
+        <ion-select-option value="Sport">Sport</ion-select-option>
+        <ion-select-option value="Van">Van</ion-select-option>
+      </ion-select>
+    </ion-item>
 
-  <h4>SUVs</h4> <!--SUVs sectional cards-->
+    <!-- Gas Dropdown -->
+    <ion-item>
+      <ion-label>Gas</ion-label>
+      <ion-select [(ngModel)]="selectedGas">
+        <ion-select-option value="Regular">Regular</ion-select-option>
+        <ion-select-option value="Diesel">Diesel</ion-select-option>
+        <ion-select-option value="Premium">Premium</ion-select-option>
+      </ion-select>
+    </ion-item>
 
-  <ion-card> <!--SUV example 1/2-->
-    <img src="https://ionicframework.com/docs/img/demos/card-media.png">
+    <!-- Year Dropdown -->
+    <ion-item>
+      <ion-label>Year</ion-label>
+      <ion-select [(ngModel)]="selectedYear">
+        <ion-select-option value="2022">2022</ion-select-option>
+        <ion-select-option value="2023">2023</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-button (click)="applyFilter()">Apply</ion-button>
+    <ion-button (click)="resetFilter()">Cancel</ion-button>
+  </div>
+
+  <ion-card *ngFor="let car of filteredCars; let i = index">
+    <ion-img [src]="car.photo" alt="Car Photo"></ion-img> <!--Car Photo-->
     <ion-card-header>
-      <ion-card-title>2024 Ford Bronco</ion-card-title>
-      <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+      <ion-card-title>{{ car.year}} {{ car.brand }} {{ car.make }}</ion-card-title> <!--Car Year, Brand, Make-->
+      <ion-card-subtitle>{{ car.carType }}</ion-card-subtitle> <!--Car Type-->
+      <ion-button (click)="toggleFavourite(car)" class="favBtn">
+        {{ favouritesService.isFavourite(car) ? 'Remove From Favourites' : 'Add to Favourites' }}
+      </ion-button>
     </ion-card-header>
 
     <ion-card-content> <!--Car Description-->
-      Here's a small text description for the card content. Nothing more, nothing less.
+      <p>{{ car.des }}</p>  
     </ion-card-content>
 
-    <ion-button name="heart-outline" class="favBtn"></ion-button> <!--Fav Btn-->
+    <div class="card-buttons">
+    <ion-button (click)="openDetailsModal(i)" fill="clear" class="detailsBtn">Details</ion-button>
+    </div>
+    <ion-modal [isOpen]="isDetailsModalOpen[i]">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar> 
+            <ion-title>Details</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="closeDetailsModal(i)">Close</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <ion-list [inset]="true">
+            <ion-item>
+              <ion-label>Liters per 100km: {{ car.lkm }}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Gas Type: {{ car.gasType }}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Doors: {{ car.nDoors }}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Seats: {{ car.nSeats }}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Additional Features: {{ car.addFeat }}</ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
 
-    <ion-button (click)="setOpen(true)" class="rentMeBtn" fill="solid">Rent Me</ion-button> <!--Rental Button-->
-    <ion-modal [isOpen]="isModalOpen"> <!--Dropdown rental form-->
+    <div class="card-buttons">
+    <ion-button (click)="setRentalModalOpen(i, true)" class="rentMeBtn" fill="clear">Rent Me</ion-button> <!-- first line new-->
+    </div>
+    <ion-modal [isOpen]="isRentalModalOpen[i]"> <!--Dropdown rental form-->
       <ng-template>
         <ion-header>
           <ion-toolbar>
             <ion-title>Rent Me</ion-title>
             <ion-buttons slot="end">
-              <ion-button (click)="setOpen(false)">Close</ion-button>
+              <ion-button (click)="setRentalModalOpen(i, false)">Close</ion-button>
             </ion-buttons>
           </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
-          <p>
-            The rental form + calendar plugin will go in here <!--Content of the rental form-->
-          </p>
+
+          <!--The rental form + calendar plugin will go in here Content of the rental form-->
+          <form>
+            <ion-item>
+              <ion-input label="First Name" placeholder="John"></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-input label="Last Name" placeholder="Doe"></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-input label="Email" type="email" placeholder="email@domain.com"></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-input label="Telephone input" type="tel" placeholder="888-888-8888"></ion-input>
+            </ion-item>
+            <ion-button type="submit">Rent</ion-button>
+          </form>
         </ion-content>
       </ng-template>
     </ion-modal>
-
-
   </ion-card>
 </ion-content>

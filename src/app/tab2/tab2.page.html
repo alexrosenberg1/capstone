@@ -6,12 +6,47 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+<ion-content>
+  <ion-card *ngFor="let fav of favouritesService.getFavourites(); let i = index">
+    <ion-img [src]="fav.photo" alt="Car Photo"></ion-img>
+    <ion-card-header>
+      <ion-card-title>{{ fav.year}} {{ fav.brand }} {{ fav.make }}</ion-card-title>
+      <ion-card-subtitle>{{ fav.carType }}</ion-card-subtitle> 
+    </ion-card-header>
+    <ion-card-content>
+      <p>{{ fav.des }}</p>
+      <ion-button (click)="showDetails(fav, i)" fill="solid" expand="block" class="dtailsBtn2">Details</ion-button>
+    </ion-card-content>
+    <ion-modal [isOpen]="isDetailsModalOpen[i]">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar> 
+            <ion-title>Details</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="closeDetailsModal(i)">Close</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <ion-list [inset]="true">
+            <ion-item>
+              <ion-label>Liters per 100km: {{ fav.lkm }}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Gas Type: {{ fav.gasType }}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Doors: {{ fav.nDoors }}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Seats: {{ fav.nSeats }}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Additional Features: {{ fav.addFeat }}</ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+  </ion-card>
 </ion-content>

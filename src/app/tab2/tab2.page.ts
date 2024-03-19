@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { FavouritesService } from '../services/favourites.service';
+import { ModalController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-tab2',
@@ -6,7 +9,14 @@ import { Component } from '@angular/core';
   styleUrls: ['tab2.page.scss']
 })
 export class Tab2Page {
+  isDetailsModalOpen: boolean[] = Array(100).fill(false);
+  constructor(public favouritesService: FavouritesService, private modalController: ModalController) {}
 
-  constructor() {}
+  showDetails(car: any, index: number) {
+    this.isDetailsModalOpen[index] = true;
+  }
 
+  closeDetailsModal(index: number) {
+    this.isDetailsModalOpen[index] = false;
+  }
 }
